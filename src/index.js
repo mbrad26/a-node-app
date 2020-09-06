@@ -21,6 +21,7 @@ const GET_REPOSITORIES_OF_ORGANIZATION = gql`
       repositories(first: 5, orderBy: { field: STARGAZERS, direction: DESC }) {
         edges {
           node {
+            id
             name
             url
           }
@@ -34,7 +35,25 @@ const GET_REPOSITORIES_OF_ORGANIZATION = gql`
   }
 `;
 
+const ADD_STAR = gql`
+  mutation AddStar($repositoryId: ID!) {
+    addStar(input: { starrableId: $repositoryId }) {
+      starrable {
+        id
+        viewerHasStarred
+      }
+    }
+  }
+`;
+
 client.query({
   query: GET_REPOSITORIES_OF_ORGANIZATION,
-  variables: { organization: 'the-road-to-learn-react' },
+  variables: { organization: "the-road-to-learn-react" },
+}).then(console.log);
+
+client.mutate({
+  mutation: ADD_STAR,
+  variables: {
+    repositoryId: 'MDEwOlJlcG9zaXRvcnk2MzM1MjkwNw==',
+  },
 }).then(console.log);
